@@ -32,22 +32,23 @@ dotenv.config()
 app.use(express.json())
 app.use("/images",express.static(path.join(__dirname,"/images")))
 // app.use(cors({ origin: "https://test-filmb.vercel.app", credentials: true }));
-// app.use(cors({
-//   origin: function (origin, callback) {
-//     // Allow requests with no origin (like mobile apps or curl requests)
-//     if (!origin) return callback(null, true);
-//     if (origin === 'https://test-filmb.vercel.app') {
-//       return callback(null, true);
-//     }
-//     callback(new Error('Not allowed by CORS'));
-//   },
-//   credentials: true
-// }));
-// Apply CORS middleware
 app.use(cors({
-  origin: '*', // Allow all origins
-  credentials: true // Allow credentials (cookies, authorization headers, etc.)
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (origin === 'https://test-filmb.vercel.app') {
+      return callback(null, true);
+    }
+    callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
 }));
+// Apply CORS middleware
+// app.use(cors({
+// applied from all origins but authentication problems
+//   origin: '*', // Allow all origins
+//   credentials: true // Allow credentials (cookies, authorization headers, etc.)
+// }));
 app.use(cookieParser())
 app.use("/api/auth",authRoute)
 app.use("/api/users",userRoute)
